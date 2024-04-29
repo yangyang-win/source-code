@@ -118,7 +118,7 @@ class HybridNetsBackbone(nn.Module):
 
     def forward(self, inputs):
       
-        p1, p2, p3, p4, p5 = self.encoder(inputs)[-5:]  
+        p2, p3, p4, p5 = self.encoder(inputs)[-4:]  
         cp3 = self.conv3(p2)
         cp3 = self.bn3(cp3)
         cp3 = self.relu3(cp3)
@@ -137,7 +137,7 @@ class HybridNetsBackbone(nn.Module):
         
         p3,p4,p5,p6,p7 = features
         
-        outputs = self.bifpndecoder((p1,p2,cp3,cp4,cp5,p3,p4,p5,p6,p7))
+        outputs = self.bifpndecoder((p2,cp3,cp4,cp5,p3,p4,p5,p6,p7))
 
         segmentation = self.segmentation_head(outputs)
         

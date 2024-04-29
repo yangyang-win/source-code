@@ -449,7 +449,7 @@ class BiFPNDecoder(nn.Module):
             SegmentationBlock(pyramid_channels, segmentation_channels, n_upsamples=n_upsamples)
             for n_upsamples in [6,5,4,3,2]
         ])
-        self.seg_p1 = SegmentationBlock(40, 64, n_upsamples=0)
+        #self.seg_p1 = SegmentationBlock(40, 64, n_upsamples=0)
         self.seg_p2 = SegmentationBlock(32, 64, n_upsamples=1)
         self.seg_p3 = SegmentationBlock(48, 64, n_upsamples=2)
         self.seg_p4 = SegmentationBlock(136, 64, n_upsamples=3)
@@ -463,11 +463,11 @@ class BiFPNDecoder(nn.Module):
         self.dropout = nn.Dropout2d(p=dropout, inplace=True)
 
     def forward(self, inputs):
-        p1, p2, cp3, cp4, cp5,p3, p4, p5,p6,p7 = inputs
+        p2, cp3, cp4, cp5,p3, p4, p5,p6,p7 = inputs
 
         feature_pyramid = [seg_block(p) for seg_block, p in zip(self.seg_blocks, [p7,p6,p5, p4, p3])]
         
-        p1 = self.seg_p1(p1)
+        #p1 = self.seg_p1(p1)
         p2 = self.seg_p2(p2)
         cp3 = self.seg_p3(cp3)
         cp4 = self.seg_p4(cp4)
@@ -475,7 +475,7 @@ class BiFPNDecoder(nn.Module):
             
         p3,p4,p5 ,p6,p7= feature_pyramid
         
-        x1 = self.merge1((p1, p2,cp3,cp4,cp5))
+        x1 = self.merge1((p2,cp3,cp4,cp5))
         x2 = self.merge2((p3,p4,p5,p6,p7))
         x = torch.cat((x1, x2), dim=1)
         x = self.convd(x)
